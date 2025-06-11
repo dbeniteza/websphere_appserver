@@ -5,6 +5,7 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
                     'status': ['preview'],
                     'supported_by': 'self'}
 
+
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
@@ -15,7 +16,12 @@ from re import match
 class IIMAgent(object):
 
     def __init__(self, module):
+        """
+        Initializes the IIMAgent with the given Ansible module.
 
+        Args:
+            module (AnsibleModule): The Ansible module instance.
+        """
         self._name = os.path.basename(__file__)
 
         self.module = module
@@ -28,9 +34,15 @@ class IIMAgent(object):
             self.module.fail_json('Specified IIM path {0} does not exist!'.format(self.iim_path), **result)
 
     def have_base_version(self, product_id):
-        '''
+        """
         Check if a base version of the specified product is installed.
-        '''
+
+        Args:
+            product_id (str): The product ID to check.
+
+        Returns:
+            bool: True if a base version is installed, False otherwise.
+        """
 
         base_product = product_id.split('_')[0]
 
@@ -40,16 +52,29 @@ class IIMAgent(object):
         return len(filtered_packages) > 0
 
     def have_exact_version(self, product_id, refresh=False):
-        '''
+        """
         Check if the exact version of the specified product is installed.
-        '''
+
+        Args:
+            product_id (str): The exact product ID to check.
+            refresh (bool): Whether to refresh the package list.
+
+        Returns:
+            bool: True if the exact version is installed, False otherwise.
+        """
 
         return product_id in self.list_installed_packages(refresh)
 
     def list_installed_packages(self, refresh=False):
-        '''
+        """
         Return the list of installed packages.
-        '''
+
+        Args:
+            refresh (bool): Whether to refresh the package list.
+
+        Returns:
+            list: A list of installed package IDs.
+        """
 
         if len(self.installed_packages) == 0 or refresh:
             rc, stdout, stderr = self.module.run_command('{0}/eclipse/tools/imcl listInstalledPackages'.format(self.iim_path), check_rc=True)
@@ -58,9 +83,15 @@ class IIMAgent(object):
             return self.installed_packages
 
     def install_package(self, product_id):
-        '''
-        Install the specified package
-        '''
+        """
+        Install the specified package using IIM.
+
+        Args:
+            product_id (str): The exact product ID to install.
+
+        Returns:
+            dict: Result dictionary with installation status and package info.
+        """
 
         shared_resources = self.module.params['shared_resources']
         repos = self.module.params['repos']
@@ -96,9 +127,15 @@ class IIMAgent(object):
         return result
 
     def uninstall_package(self, product_id):
-        '''
-        Uninstall specified package
-        '''
+        """
+        Uninstall the specified package using IIM.
+
+        Args:
+            product_id (str): The exact product ID to uninstall.
+
+        Returns:
+            dict: Result dictionary with uninstallation status and package info.
+        """
 
         install_path = self.module.params['path']
 

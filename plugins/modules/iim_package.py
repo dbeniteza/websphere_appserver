@@ -15,14 +15,21 @@ description:
   - Install or update packages using IBM Installation Manager (must be installed using the "iim" role).
 version_added: 0.1.0
 author: Daniel Benitez (@dbeniteza)
-  extends_documentation_fragment: dbeniteza.websphere_appserver.common_args
 options:
+  iim_path:
+    description:
+      - Absolute path to an existing installation of IBM Installation Manager.
+    required: false
+    default: /opt/IBM/InstallationManager
+    type: path
+    version_added: "0.1.0"
   product_id:
     description:
       - Product ID to be installed/updated/deleted.
       - May be product family, or a specific product ID instance (including FixPack details).
     required: true
-    type: str
+    type: list
+    elements: str
   path:
     description:
       - Absolute path where the package should be installed.
@@ -44,7 +51,6 @@ options:
     required: false
     type: list
     elements: str
-    aliases: repo
   shared_resources:
     description:
       - Absolute path to an existing location of the shared resources directory for IIM.
