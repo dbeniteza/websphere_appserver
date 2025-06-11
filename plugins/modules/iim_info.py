@@ -17,8 +17,14 @@ description:
   - If C(product_id) is provided, check if that specific package is installed.
 version_added: 0.1.0
 author: Daniel Benitez (@dbeniteza)
-extends_documentation_fragment: dbeniteza.websphere_appserver.common_args
 options:
+  iim_path:
+    description:
+      - Absolute path to an existing installation of IBM Installation Manager.
+    required: false
+    default: /opt/IBM/InstallationManager
+    type: path
+    version_added: "0.1.0"
   product_id:
     description:
       - May be product family, or a specific product ID instance (including FixPack details).
