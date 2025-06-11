@@ -1,0 +1,11 @@
+# Ignore build artifacts and generated HTML docs
+build/
+dist/
+
+# Ignore generated HTML files (moved to docs/html/)
+docs/html/
+docs/_build/
+
+# Ignore compiled Python files
+__pycache__/
+*.py[cod]
