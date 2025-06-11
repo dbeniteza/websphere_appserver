@@ -20,7 +20,7 @@ A collection of Middleware modules and roles required for installing and configu
 
 **Author:**
 
-* Daniel Benitez Aguila <dbeniteza.dev@gmail.com> (https://github.com/dbeniteza)
+* Daniel Benitez Aguila <dbeniteza.dev@gmail.com>
 
 **Supported ansible-core versions:**
 
