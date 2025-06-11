@@ -1,0 +1,20 @@
+---
+- name: Install YUM prereqs (x86_64)
+  ansible.builtin.package:
+    name: ['unzip', 'gtk2', 'libXtst', 'xorg-x11-fonts-Type1', 'psmisc', 'nspr', 'tar']
+    state: present
+
+- name: Install YUM prereqs (i686)
+  ansible.builtin.package:
+    name: ['glibc.i686', 'gtk2.i686', 'libXtst.i686', 'libXft.i686']
+    state: present
+    allowerasing: true
+
+- name: Install compat-libstdc++-33.i686
+  ansible.builtin.package:
+    name: compat-libstdc++-33.i686
+    state: latest # noqa package-latest
+  when: (ansible_distribution_major_version | int) == 7
+
+- name: Linux common
+  ansible.builtin.include_tasks: "linux_common.yml"

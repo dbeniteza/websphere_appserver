@@ -1,0 +1,8 @@
+---
+- name: Install Homebrew prereqs (x86_64)
+  community.general.homebrew:
+    name: ['unzip', 'gtk2', 'libXtst', 'xorg-x11-fonts-Type1', 'psmisc', 'nspr', 'tar']
+    state: present
+
+- name: Linux common
+  ansible.builtin.include_tasks: "linux_common.yml"

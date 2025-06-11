@@ -1,0 +1,60 @@
+---
+- name: Create temporary directory
+  ansible.builtin.file:
+    path: /tmp/iim/
+    recurse: true
+    mode: "0755"
+    state: directory
+  register: tmp_dir
+
+- name: Copy installer
+  ansible.builtin.copy:
+    src: "{{ iim_installer_path }}"
+    dest: "{{ tmp_dir.path }}/"
+    mode: "0755"
+  when: iim_download_url is not defined
+  register: iim_zip
+
+- name: Download installer
+  ansible.builtin.get_url:
+    url: "{{ iim_download_url }}/{{ iim_installer_path }}"
+    dest: "{{ tmp_dir.path }}/"
+    headers: "{{ iim_download_header }}"
+    mode: "0755"
+  when: iim_download_url is defined
+  register: iim_zip
+
+- name: Extract IIM installer
+  ansible.builtin.unarchive:
+    src: "{{ iim_zip.dest }}"
+    dest: "{{ tmp_dir.path }}"
+    remote_src: true
+    mode: "0755"
+    creates: "{{ tmp_dir.path }}/installc"
+
+- name: Generate IIM response file
+  ansible.builtin.template:
+    src: "iim_install.rsp.j2"
+    dest: "{{ tmp_dir.path }}/iim_install.rsp.j2"
+    mode: "0755"
+
+- name: Run IIM installer
+  ansible.builtin.command:
+    cmd: ./{{ iim_install_cmd }} -input {{ tmp_dir.path }}/iim_install.rsp.j2 -acceptLicense -installationDirectory {{ iim_install_path }} -showProgress -showVerboseProgress # noqa yaml[line-length]
+    chdir: "{{ tmp_dir.path }}"
+    creates: "{{ iim_install_path }}"
+  become: true
+
+- name: Fix IIM ownership
+  ansible.builtin.file:
+    path: "{{ iim_install_path }}"
+    state: directory
+    mode: "0755"
+    recurse: true
+  become: true
+
+- name: Delete temporary directory
+  ansible.builtin.file:
+    path: "{{ tmp_dir.path }}"
+    state: absent
+  become: true

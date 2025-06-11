@@ -1,0 +1,10 @@
+---
+iim_agent_version: "1.9.2002.20220323_1321" # Set any version number from Fix Central (FC)
+iim_install_user: "wasadmin" # Set any admin username from your environment or leave it blank
+iim_install_cmd: "{{ 'userinstc' if iim_install_user != 'wasadmin' else 'installc' | default('installc') }}" # administrator or nonadministrator command
+# Server info for downloading installers / repos directly, leave blank to copy
+iim_download_url:  # e.g. https://artifactory/repo
+iim_download_header:  # e.g. X-JFrog-Art-Api: "{{ lookup('env', 'MYTOKEN') }}"
+iim_remote_repo: "" # e.g. hhttps://public.dhe.ibm.com/software/rationalsdp/v7/im/updates/repository.config
+iim_offering_id: "com.ibm.cic.agent"
+iim_features: "agent_core,agent_jre" # Feature IDs can be specified by a comma-delimited list.

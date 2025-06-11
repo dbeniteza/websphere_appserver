@@ -1,0 +1,42 @@
+---
+- name: Create temporary directory
+  ansible.windows.win_file:
+    path: C:\Temp\iim
+    state: directory
+  register: tmp_dir
+
+- name: Copy installer
+  ansible.windows.win_copy:
+    src: "{{ iim_installer_path }}"
+    dest: "{{ tmp_dir.path }}/"
+  when: iim_download_url is not defined
+  register: iim_zip
+
+- name: Download IIM installer
+  ansible.windows.win_get_url:
+    url: "{{ iim_download_url }}/{{ iim_installer_path }}"
+    dest: "{{ tmp_dir.path }}/"
+    headers: "{{ iim_download_header }}"
+  when: iim_download_url is defined
+  register: iim_zip
+
+- name: Extract IIM installer
+  community.builtin.win_unzip:
+    src: "{{ iim_zip.dest }}"
+    dest: "{{ tmp_dir.path }}"
+    creates: "{{ tmp_dir.path }}/installc.exe"
+
+- name: Generate Installation Manager Response file
+  ansible.windows.win_template:
+    src: "iim_install.rsp.j2"
+    dest: "{{ tmp_dir.path }}/iim_install.rsp.j2"
+
+- name: Run IIM installer
+  ansible.windows.win_command: "{{ iim_install_cmd }}.exe -input {{ tmp_dir.path }}/iim_install.rsp.j2 -acceptLicense -installationDirectory {{ iim_install_path }} -showProgress -showVerboseProgress" # noqa yaml[line-length]
+  args:
+    chdir: "{{ tmp_dir.path }}"
+
+- name: Delete temporary directory
+  ansible.windows.win_file:
+    path: "{{ tmp_dir.path }}"
+    state: absent
