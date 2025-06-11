@@ -1,0 +1,52 @@
+<!-- Include XML encoding. -->
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Response file attributes. -->
+<agent-input clean='true' temporary='true'>
+
+<!-- Parameterized variables in response files can improve the enterprise deployment experience for customers.
+	Use ansible variables replacement here. Then put the variable name within this form: ${varName} -->
+<variables>
+  <variable name='remoteRepo' value='{{ iim_remote_repo }}'/>
+  <variable name='repoLocation' value='{{ iim_remote_repo }}'> <!-- Remote repository -->
+    <if name='remoteRepo' equals='' value='{{ tmp_dir.path }}'/> <!-- Local repository (unarchived zip file) -->
+  </variable>
+  <variable name='features' value='{{ iim_features }}'/>
+  <variable name='offeringId' value='{{ iim_offering_id }}'/>
+  <variable name='IIMagentVersion' value='{{ iim_agent_version }}'/>
+</variables>
+
+<!-- Specify repositories to retrieve Installation Manager and product installation files from. 
+	Use this command to specify the repositories that are used during a silent installation. 
+	Use a URL or UNC path to specify the remote repositories. Or use directory paths to specify the local repositories.-->
+<server>
+<repository location='${repoLocation}'/>
+</server>
+
+<!-- Add the offerings and features to install. You can install Installation Manager and packages in one response file. -->
+<install>
+<offering features='${features}' id='${offeringId}' version='${IIMagentVersion}'/>
+</install>
+
+<!-- Add Installation Manager preferences. Preferences with _EDITABLE option set to false will be disabled in the user interface. -->
+<!-- OPTIONAL - How to disable preferences that search for updates in the Installation Manager user interface. -->
+<preference name='offering.service.repositories.areUsed' value='true' />
+<preference name='offering.service.repositories.areUsed_EDITABLE' value='false' />
+<preference name='com.ibm.cic.common.core.preferences.searchForUpdates' value='true' />
+<preference name='com.ibm.cic.common.core.preferences.searchForUpdates_EDITABLE' value='false' />
+
+
+
+<preference name='com.ibm.cic.common.core.preferences.repositoryLocations_EDITABLE' value='false' />
+<preference name='com.ibm.cic.common.core.preferences.eclipseCache' value='C:\Program Files\IBM\IMShared' />
+<preference name='com.ibm.cic.common.core.preferences.connectTimeout' value='30' />
+<preference name='com.ibm.cic.common.core.preferences.http.proxyEnabled' value='false'/>
+<preference name='com.ibm.cic.common.core.preferences.readTimeout' value='30' />
+<preference name='com.ibm.cic.common.core.preferences.downloadAutoRetryCount' value='0' />
+<preference name='com.ibm.cic.common.core.preferences.ssl.nonsecureMode' value='false' />
+<preference name='com.ibm.cic.common.core.preferences.http.disablePreemptiveAuthentication' value='false' />
+<preference name='com.ibm.cic.common.core.preferences.preserveDownloadedArtifacts' value='true' />
+<preference name='com.ibm.cic.common.core.preferences.keepFetchedFiles' value='true' />
+<preference name='PassportAdvantageIsEnabled' value='false' />
+
+</agent-input>
