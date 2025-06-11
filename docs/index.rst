@@ -5,7 +5,7 @@
 Welcome to my Ansible collection documentation
 ==============================================
 
-This docsite contains documentation of dbeniteza.websphere-appserver.
+This docsite contains documentation of dbeniteza.websphere_appserver.
 
 
 .. toctree::
